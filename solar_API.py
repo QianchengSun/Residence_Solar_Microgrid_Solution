@@ -1,87 +1,12 @@
 ## This is the function package for obtain a .csv file through API address
-
-#%% Load packages 
-
-# https://developer.nrel.gov/docs/solar/nsrdb/himawari-download/
-
-
-from array import array
-import requests # use requests to obtain the information from URL
-import pandas as pd
-#%%
-# use your personal token to access the API
-"""
-Please enter your own personal token to access the API
-Weblink for obtain API Key :
-https://developer.nrel.gov/docs/solar/nsrdb/himawari-download/
-
-Reference information for PV watts API :
-https://developer.nrel.gov/docs/solar/pvwatts/v6/
-"""
-api_key = "OmLmJHgTudxD6hHchGkPc30zvBTFGNf2Q2Idt8AB"
-# url for obtain PV watts dataset
-pv_watts_url = "https://developer.nrel.gov/api/pvwatts/v6"
-# data format
-# represent for the data format that you want to download
-# Options : .json, .xml
-data_format = ".json"
-
-# location latitude
-lat = "39.77" # type = decimal, range = (-90, 90)
-
-# location longitude 
-lon = "-84.18" # type = decimal, range = (-180, 180)
-
-# system capacity, Nameplates capacity(kW)
-system_capacity = "4" # type = decimal, range = (0.05, 500000)
-
-# module type 
-# module type for PV 
-# Options : 0 for Standard. 1 for Premium. 2 for Thin film
-module_type = "0" # Here step up the modu;e type is Standard
-
-# System loss (precent)
-losses = "10" # data type = decimal, range = (-5, 99)
-
-# array_type 
-array_type = "0" # data type = integer
-# option:
-# 0, Fixed - Open Rack
-# 1, Fixed - Roof Mounted
-# 2, 1 - Axis 
-# 3, 1 - Axis Backtracking
-# 4, 2 - Axis
-
-# tilt angle degrees
-tilt = "45" # data type = decimal, range = [0, 90]
-#
-# azimuth angle
-azimuth = "60" # data type = decimal, range = (0,360)
-# time frame 
-timeframe = "hourly"
-url = pv_watts_url + data_format + "?" +\
-     "api_key=" + api_key + "&"\
-        + "lat=" + lat + "&" \
-            + "lon=" + lon + "&" \
-                + "losses=" + losses + "&" \
-                    + "system_capacity=" + system_capacity + "&"\
-                        + "module_type=" + module_type + "&" \
-                            + "array_type=" + array_type + "&" \
-                                + "tilt=" + tilt + "&" \
-                                    + "azimuth=" + azimuth + "&" \
-                                        + "timeframe=" + timeframe
-
-response = requests.get(url)
-# print(response.text)
-
-#%%
+# Author : Qiancheng Sun
+# Load packages 
 
 import requests # use requests to obtain the information from URL
 import pandas as pd
 import os 
 import json
 import numpy as np
-#%%
 # function for access the PV watts API
 def solar_PV_watts_API(api_key, 
     solar_api_url, 
@@ -262,50 +187,7 @@ def solar_PV_watts_API(api_key,
     solar_data = json.loads(data)
 
     return solar_data
-#%% test for obtain the data from API dataset
-api_key = "OmLmJHgTudxD6hHchGkPc30zvBTFGNf2Q2Idt8AB"
-# url for obtain PV watts dataset
-pv_watts_url = "https://developer.nrel.gov/api/pvwatts/v6"
-# data format
-data_format = ".json"
-# location latitude
-lat = "39.77" # type = decimal, range = (-90, 90)
-# location longitude 
-lon = "-84.18" # type = decimal, range = (-180, 180)
-# system capacity, Nameplates capacity(kW)
-system_capacity = "4" # type = decimal, range = (0.05, 500000)
-module_type = "0" # Here step up the modu;e type is Standard
-# System loss (precent)
-losses = "10" # data type = decimal, range = (-5, 99)
-# array_type 
-array_type = "0" # data type = integer
-# tilt angle degrees
-tilt = "45" # data type = decimal, range = [0, 90]
-# azimuth angle
-azimuth = "60" # data type = decimal, range = (0,360)
-# time frame 
-timeframe = "hourly"
-# path for save the data
-output_path = r"/Users/qianchengsun/PhD/github/Solar_API/"
-
-solar_data = solar_PV_watts_API(api_key= api_key,
-                                solar_api_url= pv_watts_url,
-                                data_format= data_format, 
-                                latitude= lat,
-                                longitude= lon,
-                                system_capacity= system_capacity, 
-                                module_type= module_type,
-                                losses= losses,
-                                array_type= array_type,
-                                tilt= tilt,
-                                azimuth= azimuth,
-                                timeframe= timeframe,
-                                output_dir = output_path)
-
-#%%
-print(solar_data)
-
-# %% Read Json file into numpy array and download the data
+#  Read Json file into numpy array and download the data
 # function to extract element from Json file
 # Obtain the information from Json file
 def extract_element_from_json(obj, path):
@@ -345,8 +227,8 @@ def extract_element_from_json(obj, path):
             outer_arr.append(extract(item, path, 0, []))
         return outer_arr
 
-#%% obtain the values from the Json file
-def soalar_data_from_json(input_data, output_dir, time_switch = True):
+# obtain the values from the Json file
+def solar_data_from_json(input_data, output_dir, time_switch = True):
     """
     The function is developed to obtain the information from the .json file.
 
@@ -499,8 +381,4 @@ def soalar_data_from_json(input_data, output_dir, time_switch = True):
     """
     return df_solar
 
-# %%
-data = soalar_data_from_json(input_data= solar_data,
-                            output_dir= output_path,
-                            time_switch= False)
 # %%
