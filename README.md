@@ -27,7 +27,8 @@ Working required packages:
 5. os
 
 Install required packages:
-1. Open your terminal window and type :
+1. Open your terminal window and type :\
+
 pip3 install requests
 
 pip3 install numpy
