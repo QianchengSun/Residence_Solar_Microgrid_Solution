@@ -12,36 +12,37 @@ https://developer.nrel.gov/docs/solar/pvwatts/v6/
 
 Package Tutorial:
 1. Open your terminal window and type :
-'''
+```
 git clone https://github.com/QianchengSun/Solar_API.git
-'''
+```
 2. Go to the Solar_API file, fix the parameters in solar_API_pipeline.py, and save file
 3. Open your terminal window and type :
-'''
+```
 python3 solar_API_pipeline.py
-'''
+```
 
 4. Then you will get the solar data about PV watts by your fixed parameters.
 
 
-Working required packages:
+Working required packages & installiation:
 1. numpy
+```
+pip3 install numpy
+```
 2. pandas
+```
+pip3 install pandas
+```
 3. requests
+```
+pip3 install requests
+```
 4. json
+```
+pip3 install json
+```
 5. os
 
-Install required packages:
-1. Open your terminal window and type :\
-'''
-pip3 install requests
-'''
-'''
-pip3 install numpy
-'''
-'''
-pip3 install pandas
-'''
-'''
-pip3 install json
-'''
+
+
+
