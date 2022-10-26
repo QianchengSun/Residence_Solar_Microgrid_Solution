@@ -1,7 +1,7 @@
 ## This is the function package for obtain a .csv file through API address
 # Author : Qiancheng Sun
 # Load packages 
-
+#%%
 import requests # use requests to obtain the information from URL
 import pandas as pd
 import os 
@@ -11,8 +11,7 @@ import numpy as np
 def solar_PV_watts_API(api_key, 
     solar_api_url, 
     data_format, 
-    latitude,
-    longitude,
+    address,
     system_capacity, 
     module_type,
     losses,
@@ -59,13 +58,19 @@ def solar_PV_watts_API(api_key,
                 .json : .json represent for JavaScript Object Notation, which can be read as .txt file
                 .xml : .xml represent for eXtensible Markup Language
         
-        latitude : string (character) ---- decimal
+        address : string 
                 Required input argument
+
+                The address information for the residential house.
+
+
+        latitude : string (character) ---- decimal
+                Required input argument (Optional if there is address information)
 
                 The latitude for the location to use. The range of the latitude is [-90, 90].    
 
         longitude : string (character) ---- decimal 
-                Required input argument
+                Required input argument (Optional if there is address information)
 
                 The longitude for the location to use. The range of longitude is [-180, 180].
 
@@ -135,11 +140,7 @@ def solar_PV_watts_API(api_key,
     # Options : .json, .xml
     data_format = data_format
 
-    # location latitude
-    lat = latitude # type = decimal, range = (-90, 90)
-
-    # location longitude 
-    lon = longitude # type = decimal, range = (-180, 180)
+    address = address
 
     # system capacity, Nameplates capacity(kW)
     system_capacity = system_capacity # type = decimal, range = (0.05, 500000)
@@ -170,8 +171,7 @@ def solar_PV_watts_API(api_key,
     timeframe = timeframe
     url = pv_watts_url + data_format + "?" +\
         "api_key=" + api_key + "&"\
-            + "lat=" + lat + "&" \
-                + "lon=" + lon + "&" \
+            + "address=" + address + "&" \
                     + "losses=" + losses + "&" \
                         + "system_capacity=" + system_capacity + "&"\
                             + "module_type=" + module_type + "&" \
@@ -380,5 +380,20 @@ def solar_data_from_json(input_data, output_dir, time_switch = True):
     Use this function will return a data frame
     """
     return df_solar
+
+# %%
+def read_file(file_path):
+    """
+    Here is the function that used to read the file path for the residential energy consumption dataset for empowersaves
+
+    Input Argument:
+        file_path: string, the full file path the object file
+    
+    """
+    file = pd.read_csv(file_path)
+    return (file)
+
+
+
 
 # %%
