@@ -13,65 +13,6 @@ solar_API_path = os.path.join(__file__)
 sys.path.append(solar_API_path)
 import solar_API
 
-
-# %% Test the solar working flow for all residential house
-# Test work
-"""
-Here is the test part for applying the solar panel optimization for all residential houses.
-"""
-# read target file
-file_path = r"/Users/qianchengsun/Desktop/Empowersaves/Code_package/Test_solar_API/hamilton_county.csv"
-file = solar_API.read_file(file_path= file_path)
-# In here, only need to obtain the address as the solar API input
-target_address = file["Address"]
-actual_annual_electric_consumption = file["typical_annual_electric_consumption"]
-
-
-# NREL file path (Only for Cincinnati area ---- Hamilton County)
-
-# High NREL electric consumption
-NREL_path_1 = r"/Users/qianchengsun/Desktop/Empowersaves/Code_package/NREL_consumption/HIGH/USA_OH_Cincinnati.Muni.AP-Lunken.Field.724297_TMY3_HIGH.csv"
-
-# Base NREL electric consumption
-NREL_path_2 = r"/Users/qianchengsun/Desktop/Empowersaves/Code_package/NREL_consumption/BASE/USA_OH_Cincinnati.Muni.AP-Lunken.Field.724297_TMY3_BASE.csv"
-
-# Low NREL electric consumption
-NREL_path_3 = r"/Users/qianchengsun/Desktop/Empowersaves/Code_package/NREL_consumption/LOW/USA_OH_Cincinnati.Muni.AP-Lunken.Field.724297_TMY3_LOW.csv"
-
-
-NREL_file_high = pd.read_csv(NREL_path_1) # High consumption
-NREL_file_base = pd.read_csv(NREL_path_2) # Base consumption
-NREL_file_low = pd.read_csv(NREL_path_3) # Low consumption
-
-
-# solar API setup
-api_key = "OmLmJHgTudxD6hHchGkPc30zvBTFGNf2Q2Idt8AB"
-# url for obtain PV watts dataset
-pv_watts_url = "https://developer.nrel.gov/api/pvwatts/v6"
-# data format
-data_format = ".json"
-# location latitude
-# lat = "39.77" # type = decimal, range = (-90, 90)
-# location longitude 
-# lon = "-84.18" # type = decimal, range = (-180, 180)
-# system capacity, Nameplates capacity(kW)
-system_capacity = "1" # type = decimal, range = (0.05, 500000)
-module_type = "0" # Here step up the module type is Standard
-# System loss (precent)
-losses = "10" # data type = decimal, range = (-5, 99)
-# array_type 
-array_type = "0" # data type = integer
-# tilt angle degrees
-tilt = "20" # data type = decimal, range = [0, 90]
-# azimuth angle
-azimuth = "180" # data type = decimal, range = (0,360)
-# time frame 
-timeframe = "hourly"
-# path for save the data
-output_path = r"/Users/qianchengsun/Desktop/Empowersaves/Code_package/Test_solar_API"
-
-
-#%%
 def obtain_PV_AC_output(data):
     """
     Description:
@@ -110,10 +51,16 @@ def obtain_typical_consumption(file, NREL_file):
 
 def calculate_simple_payback(solar_capacity_kW):
     """
-    Description:
+    Description
+    ------------
     The calculate_simple_payback() is used to optimize the minimum payback year of the residential house by installing the solar panel
 
-    OUtput:
+
+
+
+
+    OUtput
+    ------
 
     After using Genetic Algorithm to optimize the solar capacity and the payback years.
 
@@ -124,6 +71,7 @@ def calculate_simple_payback(solar_capacity_kW):
 
     2. "Objective function", in here, the objective function represent for the best output y, 
                                     which means the minimum payback year for installing the solar panel on current residential house
+
     """
 
     # solar_capacity_kW is the input for number of solar capacity that need for the residential house
@@ -131,8 +79,6 @@ def calculate_simple_payback(solar_capacity_kW):
     solar_PV_kW_per_kW_capacity = obtain_PV_AC_output(solar_data) # create a function about obtaining solar data value
 
     load_energy_consumption = obtain_typical_consumption(file, NREL_file) # create a function about obtaining the electric consumption 
-
-    electric_price = 0.14
     
     cost_capital_solar_PV_per_kW = 1.77 * 1000
 
@@ -195,6 +141,29 @@ def calculate_simple_payback(solar_capacity_kW):
 
 
 def calculate_cost_per_kWh(solar_capacity_kW):
+    """
+    Description
+    ------------
+
+    The calculate cost per kWh function is used to optimize the cost per kWh after installing the solar panel for residence.
+
+
+
+    Argument
+    -----------
+
+    solar_capacity_kW: the solar capacity for the solar system
+
+
+
+
+    Output
+    --------
+
+    cost_per_kWh: the optimized solution on electricity cost after installing the solar panel.
+    
+    
+    """
 
     # solar_capacity_kW is the input for number of solar capacity that need for the residential house
 
@@ -270,13 +239,69 @@ def calculate_cost_per_kWh(solar_capacity_kW):
     cost_per_kWh = np.mean(cost_per_hr / load_hourly_kW.reshape(8760))
     
     return(cost_per_kWh)
+
+
 #%%
+"""
+Solar optimization pipeline
+"""
+# read target file
+file_path = r"/Users/qianchengsun/Desktop/Empowersaves/Code_package/Test_solar_API/hamilton_county.csv"
+file = solar_API.read_file(file_path= file_path)
+# In here, only need to obtain the address as the solar API input
+target_address = file["Address"]
+actual_annual_electric_consumption = file["typical_annual_electric_consumption"]
+
+
+# NREL file path (Only for Cincinnati area ---- Hamilton County)
+
+# High NREL electric consumption
+NREL_path_1 = r"/Users/qianchengsun/Desktop/Empowersaves/Code_package/NREL_consumption/HIGH/USA_OH_Cincinnati.Muni.AP-Lunken.Field.724297_TMY3_HIGH.csv"
+
+# Base NREL electric consumption
+NREL_path_2 = r"/Users/qianchengsun/Desktop/Empowersaves/Code_package/NREL_consumption/BASE/USA_OH_Cincinnati.Muni.AP-Lunken.Field.724297_TMY3_BASE.csv"
+
+# Low NREL electric consumption
+NREL_path_3 = r"/Users/qianchengsun/Desktop/Empowersaves/Code_package/NREL_consumption/LOW/USA_OH_Cincinnati.Muni.AP-Lunken.Field.724297_TMY3_LOW.csv"
+
+
+NREL_file_high = pd.read_csv(NREL_path_1) # High consumption
+NREL_file_base = pd.read_csv(NREL_path_2) # Base consumption
+NREL_file_low = pd.read_csv(NREL_path_3) # Low consumption
+
+
+# solar API setup
+api_key = "OmLmJHgTudxD6hHchGkPc30zvBTFGNf2Q2Idt8AB"
+# url for obtain PV watts dataset
+pv_watts_url = "https://developer.nrel.gov/api/pvwatts/v6"
+# data format
+data_format = ".json"
+# location latitude
+# lat = "39.77" # type = decimal, range = (-90, 90)
+# location longitude 
+# lon = "-84.18" # type = decimal, range = (-180, 180)
+# system capacity, Nameplates capacity(kW)
+system_capacity = "1" # type = decimal, range = (0.05, 500000)
+module_type = "0" # Here step up the module type is Standard
+# System loss (precent)
+losses = "10" # data type = decimal, range = (-5, 99)
+# array_type 
+array_type = "0" # data type = integer
+# tilt angle degrees
+tilt = "20" # data type = decimal, range = [0, 90]
+# azimuth angle
+azimuth = "180" # data type = decimal, range = (0,360)
+# time frame 
+timeframe = "hourly"
+# path for save the data
+output_path = r"/Users/qianchengsun/Desktop/Empowersaves/Code_package/Test_solar_API"
+
 optimized_solar_capacity_list = []
 optimized_payback_year_list = [] 
 optimized_cost_per_kWh_list = []
 
 
-for i in range(0, 30):
+for i in range(0, len(target_address)):
     print(file["consumption_type"][i])
     if file["consumption_type"][i] == "High":
             NREL_file = NREL_file_high
@@ -342,7 +367,6 @@ for i in range(0, 30):
     # Best solution is the x input
     # objective function is the y output
 
-
     payback_optimization_model.run()
     convergence = payback_optimization_model.report
     solution = payback_optimization_model.output_dict
@@ -371,7 +395,8 @@ for i in range(0, 30):
     optimized_solar_capacity_list.append(optimized_solar_capacity)
     optimized_payback_year_list.append(optimized_payback_year)
     optimized_cost_per_kWh_list.append(optimized_cost_per_kWh)
-#%%
+
+# save as csv file
 # add solar capacity to the dataset
 file["solar_capacity"] = ""
 file["solar_capacity"].iloc[:30] = optimized_solar_capacity_list
@@ -389,16 +414,28 @@ file["optimized_cost_per_kWh"].iloc[:30] = optimized_cost_per_kWh_list
 output_path = r"/Users/qianchengsun/Desktop/Empowersaves/Code_package/Test_solar_API/solar_capacity_demo.csv"
 file.to_csv(output_path)
 
+"""
+Impact of Net Energy Cost is developed in R
+Reference link for the cost is list below:
+"""
+# monthly solar loan : 50 ~250
+# reference website:
+# https://www.supermoney.com/much-cost-lease-solar-power-system-supermoney-solar-installation-cost-guide/
 
-
-
-
-
+# monthly electric bill: 171
+# reference website
+# https://www.energysage.com/local-data/electricity-cost/oh/
 
 
 #%%
 
 
+"""
+Example:
+
+Here is the example to show the solar optimization for several houses from the dataset
+
+"""
 
 i = 30
 if file["consumption_type"][i] == "High":
@@ -473,7 +510,7 @@ solution = payback_optimization_model.output_dict
 optimized_solar_capacity = solution["variable"]
 optimized_payback_year = solution["function"]
 #%%
-    # set up boundary for the fixed solar capacity
+# # set up boundary for the fixed solar capacity
 boundary_2 = np.array([[np.min(convergence), np.max(convergence) + 0.001 ]])
 
 cost_optimization_model = ga(function = calculate_cost_per_kWh,
@@ -488,40 +525,10 @@ cost_optimization_model.run()
 cost_convergence = cost_optimization_model.report
 cost_solution = cost_optimization_model.output_dict
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-# %%
+#%%
+"""
+Step by step validating.
+"""
 solar_capacity_kW = 5
 solar_PV_kW_per_kW_capacity = obtain_PV_AC_output(solar_data) # create a function about obtaining solar data value
 

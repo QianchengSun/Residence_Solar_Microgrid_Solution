@@ -380,20 +380,3 @@ def solar_data_from_json(input_data, output_dir, time_switch = True):
     Use this function will return a data frame
     """
     return df_solar
-
-# %%
-def read_file(file_path):
-    """
-    Here is the function that used to read the file path for the residential energy consumption dataset for empowersaves
-
-    Input Argument:
-        file_path: string, the full file path the object file
-    
-    """
-    file = pd.read_csv(file_path)
-    return (file)
-
-
-
-
-# %%
