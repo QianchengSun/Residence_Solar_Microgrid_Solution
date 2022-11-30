@@ -171,7 +171,6 @@ def calculate_cost_per_kWh(solar_capacity_kW):
 
     load_energy_consumption = obtain_typical_consumption(file, NREL_file) # create a function about obtaining the electric consumption 
 
-    electric_price = 0.14
     
     cost_capital_solar_PV_per_kW = 1.77 * 1000
 
@@ -231,7 +230,7 @@ def calculate_cost_per_kWh(solar_capacity_kW):
     simple_payback = solar_install_cost / (annual_total_income - solar_maintenance_cost_annual)
 
     # calculate the cost per kWh
-    cost_per_hr = load_energy_consumption * electric_price - income_excess_solar_hr - cost_saved_behind_meter_solar_hr.reshape(8760)
+    cost_per_hr = load_energy_consumption * behind_meter_price - income_excess_solar_hr - cost_saved_behind_meter_solar_hr.reshape(8760)
 
     cost_per_hr[cost_per_hr < 0] = 0
 
@@ -247,7 +246,7 @@ Solar optimization pipeline
 """
 # read target file
 file_path = r"/Users/qianchengsun/Desktop/Empowersaves/Code_package/Test_solar_API/hamilton_county.csv"
-file = solar_API.read_file(file_path= file_path)
+file = pd.read_csv(file_path)
 # In here, only need to obtain the address as the solar API input
 target_address = file["Address"]
 actual_annual_electric_consumption = file["typical_annual_electric_consumption"]
@@ -300,7 +299,7 @@ optimized_solar_capacity_list = []
 optimized_payback_year_list = [] 
 optimized_cost_per_kWh_list = []
 
-
+# len(target_address)
 for i in range(0, len(target_address)):
     print(file["consumption_type"][i])
     if file["consumption_type"][i] == "High":
@@ -395,21 +394,21 @@ for i in range(0, len(target_address)):
     optimized_solar_capacity_list.append(optimized_solar_capacity)
     optimized_payback_year_list.append(optimized_payback_year)
     optimized_cost_per_kWh_list.append(optimized_cost_per_kWh)
-
+#%%
 # save as csv file
 # add solar capacity to the dataset
 file["solar_capacity"] = ""
-file["solar_capacity"].iloc[:30] = optimized_solar_capacity_list
+file["solar_capacity"].iloc[:len(optimized_solar_capacity_list)] = optimized_solar_capacity_list
 
 
 
 # add optimized payback year to the dataset
 file["optimized_payback_year"] = ""
-file["optimized_payback_year"].iloc[:30] = optimized_payback_year_list
+file["optimized_payback_year"].iloc[:len(optimized_payback_year_list)] = optimized_payback_year_list
 
 # add optimized cost per kWh
 file["optimized_cost_per_kWh"] = ""
-file["optimized_cost_per_kWh"].iloc[:30] = optimized_cost_per_kWh_list
+file["optimized_cost_per_kWh"].iloc[:len(optimized_cost_per_kWh_list)] = optimized_cost_per_kWh_list
 
 output_path = r"/Users/qianchengsun/Desktop/Empowersaves/Code_package/Test_solar_API/solar_capacity_demo.csv"
 file.to_csv(output_path)
